@@ -170,9 +170,13 @@ func addStartup(S *tabStartup, j *int) {
 	fmt.Println("Masukkan nama dan role")
 
 	for i = 0; i < S[*j].jumKaryawan; i++ {
+		fmt.Printf("Masukkan nama karyawan ke-%d: ", i+1)
 		fmt.Scan(&S[*j].karyawan[i])
+
+		fmt.Printf("Masukkan role karyawan ke-%d: ", i+1)
 		fmt.Scan(&S[*j].role[i])
 	}
+
 	fmt.Println()
 	fmt.Println("Pilih bidang startup")
 	fmt.Println("1. Teknologi")
@@ -356,9 +360,11 @@ func byname(S tabStartup, j int) {
 			fmt.Println("Tahun Berdiri:", S[i].tahun)
 			fmt.Println("Jumlah Dana:", S[i].dana)
 			fmt.Println("Jumlah Karyawan:", S[i].jumKaryawan)
-			fmt.Println("Daftar Karyawan dan Role:")
+			fmt.Println("Daftar Nama Karyawan dan Role:")
+			fmt.Printf("%-10s %-15s\n", "Nama", "Role")
+			fmt.Println("---------------------------------------")
 			for k = 0; k < S[i].jumKaryawan; k++ {
-				fmt.Printf("%-10s %-10s", S[i].karyawan[k], S[i].role[k])
+				fmt.Printf("%-10s %-15s", S[i].karyawan[k], S[i].role[k])
 				fmt.Println()
 			}
 			break
