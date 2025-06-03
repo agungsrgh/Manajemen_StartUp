@@ -25,6 +25,7 @@ var S tabStartup
 var Teknologi, Pendidikan, Keuangan, Kesehatan, Properti, Travel, Logistik int
 
 func main() {
+	// Menampilkan menu registrasi dan login aplikasi
 	var opsi int
 	for {
 		fmt.Println("=======================================")
@@ -58,18 +59,32 @@ func main() {
 }
 
 func register(A *tabAkun, n *int) {
-	fmt.Print("Masukkan Username yang ingin anda gunakan : ")
-	fmt.Scan(&A[*n].user)
-	for i := 0; i < *n; i++ {
-		if A[i].user == A[*n].user {
-			fmt.Println("Username sudah digunakan. Silakan gunakan username lain.")
-			fmt.Println()
-			return
+	//I.S. Pengguna memasukkan username dan password yang ingin didaftarkan
+	//F.S. Akun berhasil ditambahkan ke dalam sistem
+	var duplikat bool
+	var i int
+
+	for {
+		duplikat = false
+		fmt.Print("Masukkan Username yang ingin anda gunakan: ")
+		fmt.Scan(&A[*n].user)
+
+		for i = 0; i < *n; i++ {
+			if A[i].user == A[*n].user {
+				duplikat = true
+				break
+			}
 		}
+		if !duplikat {
+			break
+		}
+		fmt.Println("Username sudah digunakan. Silakan gunakan username lain.")
+		fmt.Println()
 	}
 
-	fmt.Print("Masukkan Password yang ingin anda gunakan :")
+	fmt.Print("Masukkan Password yang ingin anda gunakan: ")
 	fmt.Scan(&A[*n].pw)
+
 	*n = *n + 1
 	fmt.Println()
 	fmt.Println("=======================================")
@@ -80,8 +95,11 @@ func register(A *tabAkun, n *int) {
 }
 
 func login(A tabAkun, n int) {
+	//I.S. Pengguna memasukkan username dan password yang telah didaftarkan
+	//F.S. Pengguna berhasil login dan beralih ke menu utama
 	var username, password string
 	var i int
+	var loginBerhasil bool = false
 
 	fmt.Print("Username: ")
 	fmt.Scan(&username)
@@ -89,22 +107,27 @@ func login(A tabAkun, n int) {
 	fmt.Scan(&password)
 	for i = 0; i < n; i++ {
 		if A[i].user == username && A[i].pw == password {
-			fmt.Println()
-			fmt.Println("=======================================")
-			fmt.Println("             LOGIN BERHASIL            ")
-			fmt.Println("             SELAMAT DATANG            ")
-			fmt.Println("=======================================")
-			fmt.Println()
-			dashboard()
-			return
+			loginBerhasil = true
+			break
 		}
 	}
-	fmt.Println()
-	fmt.Println("===#       LOGIN GAGAL       #===")
-	fmt.Println()
+	if loginBerhasil {
+		fmt.Println()
+		fmt.Println("=======================================")
+		fmt.Println("             LOGIN BERHASIL            ")
+		fmt.Println("             SELAMAT DATANG            ")
+		fmt.Println("=======================================")
+		fmt.Println()
+		dashboard()
+	} else {
+		fmt.Println()
+		fmt.Println("===#       LOGIN GAGAL       #===")
+		fmt.Println()
+	}
 }
 
 func dashboard() {
+	// Menampilkan menu utama dan pilihan menu
 	var opsi int
 	for {
 		fmt.Println("=======================================")
@@ -146,17 +169,27 @@ func dashboard() {
 }
 
 func addStartup(S *tabStartup, j *int) {
+	//I.S. Pengguna menambahkan Data startup yang ingin didaftarkan
+	//F.S. Startup berhasil ditambahkan ke dalam sistem
 	var i int
 	var opsi int
+	var duplikat bool
 
-	fmt.Print("Nama Startup: ")
-	fmt.Scan(&S[*j].name)
-	for i = 0; i < *j; i++ {
-		if S[i].name == S[*j].name {
-			fmt.Println("==##       NAMA STARTUP SUDAH DIGUNAKAN       ##==")
-			fmt.Println()
-			return
+	for {
+		duplikat = false
+		fmt.Print("Nama Startup: ")
+		fmt.Scan(&S[*j].name)
+		for i = 0; i < *j; i++ {
+			if S[i].name == S[*j].name {
+				duplikat = true
+				break
+			}
 		}
+		if !duplikat {
+			break
+		}
+		fmt.Println("==##       NAMA STARTUP SUDAH DIGUNAKAN       ##==")
+		fmt.Println()
 	}
 
 	fmt.Print("Nama Produk: ")
@@ -224,6 +257,8 @@ func addStartup(S *tabStartup, j *int) {
 }
 
 func editStartup(S *tabStartup, j int) {
+	//I.S. Pengguna mengubah data startup yang telah didaftarkan
+	//F.S. Startup yang sudah ada diedit dengan data lain
 	var carinama string
 	var i int
 	var index int
@@ -274,6 +309,8 @@ func editStartup(S *tabStartup, j int) {
 }
 
 func deleteStartup(S *tabStartup, j *int) {
+	//I.S. Pengguna memilih startup yang akan di hapus
+	//F.S. Startup yang dipilih dihapus dari sistem
 	var carinama string
 	var i int
 	var index int
@@ -325,22 +362,30 @@ func deleteStartup(S *tabStartup, j *int) {
 }
 
 func search() {
+	// Menampilkan menu pencarian
 	var opsi int
 
 	fmt.Println("Pilih tipe pencarian")
 	fmt.Println("1. Pencarian berdasarkan nama")
 	fmt.Println("2. Pencarian berdasarkan bidang")
-	fmt.Println()
+	fmt.Println("3. Pencarian berdasarkan tahun berdiri")
 	fmt.Print("Masukkan Opsi: ")
 	fmt.Scan(&opsi)
 	if opsi == 1 {
 		byname(S, j)
 	} else if opsi == 2 {
 		byfield(S, j)
+	} else if opsi == 3 {
+		var tahun int
+		fmt.Print("Masukkan tahun berdiri yang ingin dicari: ")
+		fmt.Scan(&tahun)
+		binarySearchByYear(S, j, tahun)
 	}
 }
 
 func byname(S tabStartup, j int) {
+	//I.S. Pengguna memasukan nama startup yang ingin dicari
+	//F.S. Sistem memberikan tampilan data startup yang dicari
 	var carinama string
 	var found bool = false
 	var i, k int
@@ -379,6 +424,8 @@ func byname(S tabStartup, j int) {
 }
 
 func byfield(S tabStartup, j int) {
+	//I.S. Pengguna memilih bidang startup yang ingin dicari
+	//F.S. Sistem menampilkan startup pada bidang tersebut
 	var bidang string
 	var found bool = false
 	var opsi, i int
@@ -416,23 +463,112 @@ func byfield(S tabStartup, j int) {
 	fmt.Println("Startup pada bidang", bidang, ":")
 	fmt.Println("================================")
 	fmt.Println()
+	found = false
 	for i = 0; i < j; i++ {
-		if bidang == S[i].bidang {
+		if S[i].bidang == bidang {
 			found = true
-			fmt.Println("Nama Startup:", S[i].name)
-			fmt.Println("Nama Produk:", S[i].produk)
-			fmt.Println("Tahun Berdiri:", S[i].tahun)
-			fmt.Println("Jumlah Dana:", S[i].dana)
 			fmt.Println()
+			fmt.Println("Nama Startup :", S[i].name)
+			fmt.Println("Nama Produk  :", S[i].produk)
+			fmt.Println("Tahun Berdiri:", S[i].tahun)
+			fmt.Println("Jumlah Dana  :", S[i].dana)
+			fmt.Println("Jumlah Karyawan:", S[i].jumKaryawan)
+			fmt.Println("Daftar Nama Karyawan dan Role:")
+			fmt.Printf("%-10s %-15s\n", "Nama", "Role")
+			fmt.Println("---------------------------------------")
+			for k := 0; k < S[i].jumKaryawan; k++ {
+				fmt.Printf("%-10s %-15s\n", S[i].karyawan[k], S[i].role[k])
+			}
+			fmt.Println("---------------------------------------")
 		}
 	}
 	if !found {
 		fmt.Println()
-		fmt.Println("===#       Tidak ada startup dalam bidang tersebut       #===")
+		fmt.Println("===#       TIDAK ADA STARTUP DIBIDANG INI       #===")
 		fmt.Println()
 	}
 }
+
+func sortByYearAsc(S *tabStartup, j int) {
+	//I.S. Menampilkan daftar startup
+	//F.S. Menampilkan daftar startup yang sudah diurutkan berdasarkan tahun secara Selection sort ASCENDING
+	var i, idx, pass int
+	var temp startup
+	pass = 1
+	for pass < j {
+		idx = pass - 1
+		i = pass
+		for i < j {
+			if S[i].tahun < S[idx].tahun {
+				idx = i
+			}
+			i++
+		}
+		temp = S[pass-1]
+		S[pass-1] = S[idx]
+		S[idx] = temp
+		pass++
+	}
+}
+
+func binarySearchByYear(S tabStartup, j int, target int) {
+	// I.S. Pengguna memasukkan tahun  startup yang ingin dicari
+	// F.S. Sistem menampilkan startup yang dicari berdasarkan tahun menggunakan metode binary search
+	sortByYearAsc(&S, j)
+	low := 0
+	high := j - 1
+	var mid int
+	found := false
+
+	for low <= high {
+		mid = (low + high) / 2
+		if S[mid].tahun == target {
+			found = true
+			break
+		} else if target < S[mid].tahun {
+			high = mid - 1
+		} else {
+			low = mid + 1
+		}
+	}
+
+	if found {
+		fmt.Println()
+		fmt.Println("=======================================")
+		fmt.Println("         STARTUP DENGAN TAHUN", target)
+		fmt.Println("=======================================")
+
+		for i := mid; i >= 0 && S[i].tahun == target; i-- {
+			tampilStartup(S[i])
+		}
+		for i := mid + 1; i < j && S[i].tahun == target; i++ {
+			tampilStartup(S[i])
+		}
+	} else {
+		fmt.Println()
+		fmt.Println("===#     TIDAK ADA STARTUP DENGAN TAHUN INI     #===")
+	}
+}
+
+func tampilStartup(s startup) {
+	// Layout untuk tampilan data startup yang dicari
+	fmt.Println("Nama Startup :", s.name)
+	fmt.Println("Produk       :", s.produk)
+	fmt.Println("Tahun Berdiri:", s.tahun)
+	fmt.Println("Dana         :", s.dana)
+	fmt.Println("Bidang       :", s.bidang)
+	fmt.Println("Jumlah Karyawan:", s.jumKaryawan)
+	fmt.Println("Daftar Karyawan:")
+	fmt.Printf("%-10s %-15s\n", "Nama", "Role")
+	fmt.Println("---------------------------------------")
+	for i := 0; i < s.jumKaryawan; i++ {
+		fmt.Printf("%-10s %-15s\n", s.karyawan[i], s.role[i])
+	}
+	fmt.Println()
+}
+
 func listing() {
+	// Menampilkan menu daftar startup beserta pilihan menu
 	var opsi1, opsi2 int
 
 	fmt.Println()
@@ -475,6 +611,8 @@ func listing() {
 }
 
 func listbyyeardesc(S *tabStartup, j int) {
+	//I.S. Menampilkan daftar startup
+	//F.S. Menampilkan daftar startup yang telah diurutkan berdasarkan tahun secara Selection sort DESCENDING
 	var i, idx, pass int
 	var temp startup
 
@@ -506,6 +644,8 @@ func listbyyeardesc(S *tabStartup, j int) {
 }
 
 func listbyyearasc(S *tabStartup, j int) {
+	//I.S. Menampilkan daftar startup
+	//F.S. Menampilkan daftar startup yang telah diurutkan berdasarkan tahun secara Selection sort ASCENDING
 	var i, idx, pass int
 	var temp startup
 
@@ -537,24 +677,21 @@ func listbyyearasc(S *tabStartup, j int) {
 }
 
 func listbyfunddesc(S *tabStartup, j int) {
-	var i, idx, pass int
+	//I.S. Menampilkan daftar startup
+	//F.S. Menampilkan daftar startup yang telah diurutkan berdasarkan pendanaan secara Insertion sort DESCENDING
+	var i, j2 int
 	var temp startup
 
-	pass = 1
-	for pass < j {
-		idx = pass - 1
-		i = pass
-		for i < j {
-			if S[i].dana > S[idx].dana {
-				idx = i
-			}
-			i = i + 1
+	for i = 1; i < j; i++ {
+		temp = S[i]
+		j2 = i - 1
+		for j2 >= 0 && S[j2].dana < temp.dana {
+			S[j2+1] = S[j2]
+			j2 = j2 - 1
 		}
-		temp = S[pass-1]
-		S[pass-1] = S[idx]
-		S[idx] = temp
-		pass = pass + 1
+		S[j2+1] = temp
 	}
+
 	fmt.Println()
 	fmt.Println("=======================================")
 	fmt.Println("              DAFTAR STARTUP           ")
@@ -568,24 +705,21 @@ func listbyfunddesc(S *tabStartup, j int) {
 }
 
 func listbyfundasc(S *tabStartup, j int) {
-	var i, idx, pass int
+	//I.S. Menampilkan daftar startup
+	//F.S. Menampilkan daftar startup yang telah diurutkan berdasarkan pendanaan secara Insertion sort ASCENDING
+	var i, j2 int
 	var temp startup
 
-	pass = 1
-	for pass < j {
-		idx = pass - 1
-		i = pass
-		for i < j {
-			if S[i].dana < S[idx].dana {
-				idx = i
-			}
-			i = i + 1
+	for i = 1; i < j; i++ {
+		temp = S[i]
+		j2 = i - 1
+		for j2 >= 0 && S[j2].dana > temp.dana {
+			S[j2+1] = S[j2]
+			j2 = j2 - 1
 		}
-		temp = S[pass-1]
-		S[pass-1] = S[idx]
-		S[idx] = temp
-		pass = pass + 1
+		S[j2+1] = temp
 	}
+
 	fmt.Println("=======================================")
 	fmt.Println("              DAFTAR STARTUP           ")
 	fmt.Println("             TERURUT ASCENDING         ")
@@ -598,6 +732,8 @@ func listbyfundasc(S *tabStartup, j int) {
 }
 
 func laporanbidang(S tabStartup, j int) {
+	//I.S. Pengguna memilih bidang yang ingin ditampilkan
+	//F.S. Sistem menampilkan data startup dari bidang yang dipilih oleh pengguna
 	var bidang string
 	var found bool = false
 	var opsi, i int
